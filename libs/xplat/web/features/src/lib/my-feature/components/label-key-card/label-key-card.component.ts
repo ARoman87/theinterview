@@ -6,10 +6,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./label-key-card.component.scss'],
 })
 export class LabelKeyCardComponent {
-  @Input() information: any; //UPDATE THIS any type
-  @Output() selectedCard: EventEmitter<unknown> = new EventEmitter(); //UPDATE THIS unknown type
+  @Input() information: any; 
+  @Output() selectedCard: EventEmitter<string> = new EventEmitter();
 
-  notifyParent(test: any) { // UPDATE THIS any type // update the name test to something better
-    this.selectedCard.emit(test);
+
+
+  notifyParent(label: string) { 
+    this.selectedCard.emit(label)
   }
 }

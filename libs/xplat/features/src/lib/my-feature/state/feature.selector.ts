@@ -1,6 +1,7 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { FeatureEntityAdaptor, FeatureState, FEATURE_STATE_KEY } from './feature.reducer';
+import { FeatureEntityAdaptor, featureReducer, FeatureState, FEATURE_STATE_KEY } from './feature.reducer';
 type ObjectWithAnyProperties = { [key: string]: any };
+import { TRANSACTION_TEST_DATA } from './testData';
 
 const selectAllFeatureState = createFeatureSelector<FeatureState>(FEATURE_STATE_KEY);
 
@@ -56,7 +57,8 @@ export const selectSelectedFeatureLabels = createSelector(
   getAllFeatureState,
   selectFeatureSelectedId,
   (state: FeatureState, selected_id): { label: string; key: string }[] => {
-    const feature = state.entities[selected_id];
+    // const feature = state.entities[selected_id];
+    const feature = TRANSACTION_TEST_DATA
 
     // The input object is null or undefined: the function will return an empty array.
     // The input object is an empty object: the function will return an empty array.
@@ -66,14 +68,51 @@ export const selectSelectedFeatureLabels = createSelector(
     // The input object contains values that are instances of Date: the function will correctly format the date value into a human-readable string for the corresponding key.
 
     // This is a starting point
-    function getSelectableKeys(input: ObjectWithAnyProperties, skipKeys: string[] = []): { label: string; key: string }[] {
-      return [{ "label": "Policy Pol Eff Date Day", "key": "policy.pol_eff_date.day" },
-      { "label": "Policy Pol Eff Date Month", "key": "policy.pol_eff_date.month" },];
+    function getSelectableKeys(input: ObjectWithAnyProperties, skipKeys: string[] = [], currentKeyPath: string[] = []): { label: string; key: string }[] {
+      const keys: { label: string; key: string }[] = []
+
+      if (!input || typeof input !== "object" || Array.isArray(input)) {
+        return keys;
+      }
+
+      for (const [key, value] of Object.entries(input)) {
+        const keyPath = [...currentKeyPath, key];
+        
+        if (skipKeys.includes(keyPath.join('.'))) {
+          continue;
+        }
+
+        function formatDate(value:any) {
+          if (value instanceof Date) {
+            return value.toLocaleDateString()
+          }
+          return value;
+        }
+    
+        if (typeof value === 'object' && value !== null) {
+          const nestedKeys = getSelectableKeys(value, skipKeys, keyPath);
+          keys.push(...nestedKeys);
+        } else {
+          let label = keyPath.map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(' ');
+          label = label.split("_").map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(" ")
+          keys.push({ label, key: formatDate(keyPath.join('.')) });
+          
+        }
+      }
+
+      return keys;
+
     }
     if (feature) {
-      return getSelectableKeys(feature, ['transactions.object_id', 'dot.documents']);
+      return getSelectableKeys(feature, ['transactions.object_id', 'dot.documents', "_id"]);
     } else {
       return [];
     }
+
+  
   }
+  
+
 );
+
+

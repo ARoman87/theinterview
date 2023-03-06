@@ -1,5 +1,6 @@
-<div class="card" (click)="notifyParent(information)"> 
-    <b>(print label here)</b> - (print key here)
+
+<div class="card" (click)="notifyParent(information.label)">
+    <!-- <b>({{information.label}})</b> - ({{information.key}}) -->
+    {{information | json}}
 </div>
 
-<!-- UPDATE THIS, lines one and two -->

@@ -9,3 +9,4 @@ export const getFeatureFailure = createAction(
   '[@theinterview/featureFailure] load',
   (error: { statusCode?: string; error: string; message: string }) => error
 );
+

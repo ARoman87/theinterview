@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { Store } from '@ngrx/store';
 
-import { TestFeatureBaseComponent } from '@theinterview/xplat/features';
+import { TestFeatureBaseComponent, selectSelectedFeatureLabels } from '@theinterview/xplat/features';
 
 @Component({
   selector: 'theinterview-test-feature',
@@ -9,13 +9,17 @@ import { TestFeatureBaseComponent } from '@theinterview/xplat/features';
 })
 export class TestFeatureComponent extends TestFeatureBaseComponent {
   selected_card_label:string|undefined;
-  card_label = 'Policy Pol Eff Date Day'
-  // UDPATE THIS, remove whichever variable you dont use above
-  constructor(_Store: Store) {
-    super(_Store);
+  data:any
+
+  constructor(private store: Store) {
+    super(store);
+    this.store.select(selectSelectedFeatureLabels).subscribe(labels => {
+        this.data = labels
+    })
+
   }
-  actOnOutput(event:any){ //UPDATE THIS any type
-    // UPDATE THIS add code
+  actOnOutput(event:string){ 
+    this.selected_card_label = event
   }
 
 }

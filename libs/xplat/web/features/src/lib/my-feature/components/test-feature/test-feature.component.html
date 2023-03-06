@@ -1,9 +1,8 @@
 Welcome!
 <!-- libs/xplat/features/src/lib/my-feature/state/data/transactions-answer-data.json -->
 <div *ngIf="feature$ | async as feature">{{ feature | json }}</div>
-<h2>The selected card is:{{ selected_card_label }}</h2>
+<h2>The selected card is: {{ selected_card_label }}</h2>
 <ng-container>
-  <ng-container>
-    <label-key-card></label-key-card> </ng-container
+  <ng-container *ngFor="let info of data">
+    <label-key-card [information]="info" (selectedCard)="actOnOutput($event)"></label-key-card> </ng-container
 ></ng-container>
-<!-- UPDATE THIS file -->
