@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { TestFeatureBaseComponent } from '@theinterview/xplat/features';
+import { EventData, ItemEventData, ListView } from '@nativescript/core';
+
 
 @Component({
   selector: 'theinterview-test-feature',
@@ -104,7 +106,12 @@ export class TestFeatureComponent extends TestFeatureBaseComponent {
     { label: 'Earned Premium', key: 'earned_premium' },
   ];
 
+
   constructor(_Store: Store) {
     super(_Store);
+  }
+
+  onItemTap(args: ItemEventData) {
+    console.log(args)
   }
 }

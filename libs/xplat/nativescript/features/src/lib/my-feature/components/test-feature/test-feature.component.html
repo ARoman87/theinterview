@@ -1,3 +1,11 @@
-<StackLayout>
+<StackLayout >
   <Label text="Welcome!" textWrap="true" horizontalAlignment="center"></Label>
+  <ListView [items]="policyData" height="1000">
+    <ng-template let-item="item">
+      <label [text]="item.label" tap="onTap" horizontalAlignment="center" (tap)="onItemTap(item.label)" ></label>
+    </ng-template>
+    
+  </ListView>
+  
+  
 </StackLayout>

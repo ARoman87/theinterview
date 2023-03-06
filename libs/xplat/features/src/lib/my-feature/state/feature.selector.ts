@@ -57,8 +57,8 @@ export const selectSelectedFeatureLabels = createSelector(
   getAllFeatureState,
   selectFeatureSelectedId,
   (state: FeatureState, selected_id): { label: string; key: string }[] => {
-    // const feature = state.entities[selected_id];
-    const feature = TRANSACTION_TEST_DATA
+    // const feature = state.entities[selected_id];     //Original feature
+    const feature = TRANSACTION_TEST_DATA              //This is new file with from transaction.ts so I could test the outputs.
 
     // The input object is null or undefined: the function will return an empty array.
     // The input object is an empty object: the function will return an empty array.
@@ -68,17 +68,17 @@ export const selectSelectedFeatureLabels = createSelector(
     // The input object contains values that are instances of Date: the function will correctly format the date value into a human-readable string for the corresponding key.
 
     // This is a starting point
-    function getSelectableKeys(input: ObjectWithAnyProperties, skipKeys: string[] = [], currentKeyPath: string[] = []): { label: string; key: string }[] {
+    function getSelectableKeys(input: ObjectWithAnyProperties, skipKeys: string[] = [], tempData: string[] = []): { label: string; key: string }[] {
       const keys: { label: string; key: string }[] = []
 
-      if (!input || typeof input !== "object" || Array.isArray(input)) {
+      if (!input || typeof input !== "object" || Array.isArray(input) || typeof input === "function") {
         return keys;
       }
-
       for (const [key, value] of Object.entries(input)) {
-        const keyPath = [...currentKeyPath, key];
+        const newKeys = [...tempData, key];
         
-        if (skipKeys.includes(keyPath.join('.'))) {
+        
+        if (skipKeys.includes(newKeys.join('.'))) {
           continue;
         }
 
@@ -90,12 +90,12 @@ export const selectSelectedFeatureLabels = createSelector(
         }
     
         if (typeof value === 'object' && value !== null) {
-          const nestedKeys = getSelectableKeys(value, skipKeys, keyPath);
+          const nestedKeys = getSelectableKeys(value, skipKeys, newKeys);
           keys.push(...nestedKeys);
         } else {
-          let label = keyPath.map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(' ');
+          let label = newKeys.map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(' ');
           label = label.split("_").map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(" ")
-          keys.push({ label, key: formatDate(keyPath.join('.')) });
+          keys.push({ label, key: formatDate(newKeys.join('.')) });
           
         }
       }
