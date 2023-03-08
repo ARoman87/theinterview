@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 @Component({
@@ -6,8 +7,10 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
   styleUrls: ['./label-key-card.component.scss'],
 })
 export class LabelKeyCardComponent {
-  @Input() information: any; 
-  @Output() selectedCard: EventEmitter<string> = new EventEmitter();
+  @Input()
+  information: any; 
+  @Output() 
+  selectedCard: EventEmitter<string> = new EventEmitter();
 
 
 

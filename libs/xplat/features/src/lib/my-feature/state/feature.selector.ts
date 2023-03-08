@@ -1,7 +1,9 @@
-import { createFeatureSelector, createSelector } from '@ngrx/store';
+import { createFeatureSelector, createSelector} from '@ngrx/store';
 import { FeatureEntityAdaptor, featureReducer, FeatureState, FEATURE_STATE_KEY } from './feature.reducer';
 type ObjectWithAnyProperties = { [key: string]: any };
 import { TRANSACTION_TEST_DATA } from './testData';
+import * as moment from "moment"
+
 
 const selectAllFeatureState = createFeatureSelector<FeatureState>(FEATURE_STATE_KEY);
 
@@ -9,6 +11,7 @@ const selectAllFeatureState = createFeatureSelector<FeatureState>(FEATURE_STATE_
  * ROOT STATE
  */
 export const getAllFeatureState = createSelector(selectAllFeatureState, (state: FeatureState) => state);
+
 
 export const selectFeatureSelectedId = createSelector(getAllFeatureState, (state: FeatureState) => state.selected_id);
 export const selectFeatureError = createSelector(getAllFeatureState, (state: FeatureState) => state.error);
@@ -57,9 +60,9 @@ export const selectSelectedFeatureLabels = createSelector(
   getAllFeatureState,
   selectFeatureSelectedId,
   (state: FeatureState, selected_id): { label: string; key: string }[] => {
+
     // const feature = state.entities[selected_id];     //Original feature
     const feature = TRANSACTION_TEST_DATA              //This is new file with from transaction.ts so I could test the outputs.
-
     // The input object is null or undefined: the function will return an empty array.
     // The input object is an empty object: the function will return an empty array.
     // The input object contains keys that should be skipped: the function will not add these keys to the result list.
@@ -69,12 +72,17 @@ export const selectSelectedFeatureLabels = createSelector(
 
     // This is a starting point
     function getSelectableKeys(input: ObjectWithAnyProperties, skipKeys: string[] = [], tempData: string[] = []): { label: string; key: string }[] {
+      
       const keys: { label: string; key: string }[] = []
-
+      
       if (!input || typeof input !== "object" || Array.isArray(input) || typeof input === "function") {
         return keys;
       }
+
       for (const [key, value] of Object.entries(input)) {
+        if (moment(value).isValid()) {
+          console.log(moment(new Date(value)).format("MMM Do YYYY, h:mm:ss a"))
+        }
         const newKeys = [...tempData, key];
         
         
@@ -82,20 +90,15 @@ export const selectSelectedFeatureLabels = createSelector(
           continue;
         }
 
-        function formatDate(value:any) {
-          if (value instanceof Date) {
-            return value.toLocaleDateString()
-          }
-          return value;
-        }
-    
+        // Pushes the keys that do not have any other keys withing the object
         if (typeof value === 'object' && value !== null) {
           const nestedKeys = getSelectableKeys(value, skipKeys, newKeys);
           keys.push(...nestedKeys);
+        // When they keys do have more keys nested, it breaks it down the label side (splitting and capitalizing) and the key side by joining.
         } else {
           let label = newKeys.map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(' ');
           label = label.split("_").map((k) => k.charAt(0).toUpperCase() + k.slice(1)).join(" ")
-          keys.push({ label, key: formatDate(newKeys.join('.')) });
+          keys.push({ label, key: newKeys.join('.') });
           
         }
       }
@@ -111,8 +114,13 @@ export const selectSelectedFeatureLabels = createSelector(
 
   
   }
+
+  
   
 
 );
+
+
+
 
 

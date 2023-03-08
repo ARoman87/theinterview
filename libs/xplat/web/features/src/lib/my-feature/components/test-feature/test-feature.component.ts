@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component } from '@angular/core';
 import { Store } from '@ngrx/store';
 
 import { TestFeatureBaseComponent, selectSelectedFeatureLabels } from '@theinterview/xplat/features';
@@ -9,7 +9,7 @@ import { TestFeatureBaseComponent, selectSelectedFeatureLabels } from '@theinter
 })
 export class TestFeatureComponent extends TestFeatureBaseComponent {
   selected_card_label:string|undefined;
-  data:any
+  data!: { label: string; key: string; }[];
 
   constructor(private store: Store) {
     super(store);
